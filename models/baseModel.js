@@ -1,21 +1,41 @@
 'use strict';
 const uuid = require('node-uuid');
 const date = require('time-stamp');
+const Storage = require('./engine/storageInstance.js');
 
 // Base model object which represents base of all objects to be implemented
-class baseModel {
-	constructor(id, created_at) {
-		
+module.exports = class BaseModel {
+	constructor(data) {
+
+		/* check if data is new object or old object and update accordingly */
+		if (data) {
+			if(data.hasOwnProperty('createdAt')) {
+				this.createdAt = data.createdAt;
+			}
+			if(data.hasOwnProperty('updatedAt')) {
+				this.updatedAt = data.updatedAt;
+			}
+		}
+		else {
+			this.id = uuid();
+			this.createdAt = date('YYYY-MM-DDTHH:mm:ss.ms');
+			Storage.storage.new(this);
+		}
 	}
 
-	// Creates a unique id for object
-	getId() {
-		console.log(uuid())
-		return uuid();
+	
+	// Saves newly updated object;
+	save() {
+		this.updatedAt = date('YYYY-MM-DDTHH:mm:ss.ms');
+		Storage.storage.save();
 	}
 
-	// Creates time stamp of when object was created
-	createdAt() {
-		console.log(date('YYYY-MM-DDTHH:mm:ss.ms'));
+
+	// Return object will all attributes. Add class name property. 
+	getObject() {
+		let newObj = Object.assign({}, this);
+		newObj.class = this.constructor.name;
+		console.log(newObj);
+		return newObj;
 	}
 }
