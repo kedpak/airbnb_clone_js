@@ -9,11 +9,11 @@ module.exports = class BaseModel {
 
 		/* check if data is new object or old object and update accordingly */
 		if (data) {
+			console.log(data);
 			if(data.hasOwnProperty('createdAt')) {
+				console.log("true")
 				this.createdAt = data.createdAt;
-			}
-			if(data.hasOwnProperty('updatedAt')) {
-				this.updatedAt = data.updatedAt;
+				this.updatedAt = date('YYYY-MM-DDTHH:mm:ss.ms');
 			}
 		}
 		else {
@@ -26,9 +26,12 @@ module.exports = class BaseModel {
 	
 	// Saves newly updated object;
 	save() {
-		this.updatedAt = date('YYYY-MM-DDTHH:mm:ss.ms');
+		if (this.hasOwnProperty('updatedAt')){
+			console.log("goood");
+			this.updatedAt = date('YYYY-MM-DDTHH:mm:ss.ms');
+		}
 		Storage.storage.save();
-	}
+	}	
 
 
 	// Return object will all attributes. Add class name property. 
